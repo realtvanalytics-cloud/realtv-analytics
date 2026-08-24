@@ -38,7 +38,7 @@ CHANNELS = [
     {"label": "Real TV (you)",  "handle": "@realtvtelugunews", "id": None},
     {"label": "TV9 Telugu",     "handle": "@tv9telugu",        "id": "UCPXTXMecYqnRKNdqdVOGSFg"},
     {"label": "NTV Telugu",     "handle": "@ntvteluguofficial","id": "UCumtYpCY26F6Jr3satUgMvA"},
-    {"label": "TV5 News",       "handle": "@tv5newschannel",   "id": None},
+    {"label": "TV5 News",       "handle": "@tv5news",   "id": None},
     {"label": "V6 News",        "handle": "@V6News",           "id": None},
     {"label": "Sakshi TV",      "handle": "@SakshiTV",         "id": None},
     {"label": "ABN Telugu",     "handle": "@abntelugutv",      "id": None},
