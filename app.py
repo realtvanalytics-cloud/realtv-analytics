@@ -30,20 +30,22 @@ import streamlit as st
 IST = timezone(timedelta(hours=5, minutes=30))
 
 # Your father's channel + the top 10 Telugu news competitors.
-# Just paste @handles — the app resolves them to channel IDs automatically.
-# Reorder / swap handles here anytime; nothing else needs to change.
-CHANNEL_HANDLES = [
-    "@realtvtelugunews",   # your channel (benchmark)
-    "@tv9telugu",
-    "@ntvteluguofficial",
-    "@tv5newsnow",
-    "@V6News",
-    "@SakshiTV",
-    "@abntelugutv",
-    "@10TVNewsTelugu",
-    "@MahaanewsLiveofficial",
-    "@etvandhrapradesh",
-    "@hmtvLive",
+# Using channel IDs (the "UC..." strings) because they NEVER change —
+# handles can be renamed and break. The label is just for display.
+# To find any channel's ID: open the channel on YouTube → ... → Share
+# channel → Copy channel ID.  Or leave "id" blank and fill "handle".
+CHANNELS = [
+    {"label": "Real TV (you)",  "handle": "@realtvtelugunews", "id": None},
+    {"label": "TV9 Telugu",     "handle": "@tv9telugu",        "id": "UCPXTXMecYqnRKNdqdVOGSFg"},
+    {"label": "NTV Telugu",     "handle": "@ntvteluguofficial","id": "UCumtYpCY26F6Jr3satUgMvA"},
+    {"label": "TV5 News",       "handle": "@tv5newschannel",   "id": None},
+    {"label": "V6 News",        "handle": "@V6News",           "id": None},
+    {"label": "Sakshi TV",      "handle": "@SakshiTV",         "id": None},
+    {"label": "ABN Telugu",     "handle": "@abntelugutv",      "id": None},
+    {"label": "10TV",           "handle": "@10TVNewsTelugu",   "id": None},
+    {"label": "Mahaa News",     "handle": "@mahaanews",        "id": "UCDKjhgRoPF1CQk7HluMz23A"},
+    {"label": "ETV Andhra",     "handle": "@etvandhrapradesh", "id": None},
+    {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
 ]
 
 # Breaking-news keywords (Telugu + English). A title hit flags the video;
@@ -77,26 +79,26 @@ def get_api_key() -> str:
 # DATA FETCHING  (cached 10 min so re-runs during the day are fast & cheap)
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_data(ttl=600, show_spinner=False)
-def resolve_channel(handle: str, api_key: str) -> dict | None:
-    """Turn an @handle into its channel ID, uploads-playlist ID, and stats."""
-    h = handle.lstrip("@")
-    r = requests.get(
-        f"{API_BASE}/channels",
-        params={
-            "part": "snippet,contentDetails,statistics",
-            "forHandle": h,
-            "key": api_key,
-        },
-        timeout=20,
-    )
+def resolve_channel(channel: dict, api_key: str) -> dict | None:
+    """Resolve a channel by ID (preferred) or @handle into its uploads
+    playlist and stats. IDs never change, so they're tried first."""
+    label = channel["label"]
+    params = {"part": "snippet,contentDetails,statistics", "key": api_key}
+    if channel.get("id"):
+        params["id"] = channel["id"]
+    else:
+        params["forHandle"] = channel["handle"].lstrip("@")
+
+    r = requests.get(f"{API_BASE}/channels", params=params, timeout=20)
     if r.status_code != 200:
-        return {"handle": handle, "error": r.json().get("error", {}).get("message", r.text)}
+        return {"label": label, "error": r.json().get("error", {}).get("message", r.text)}
     items = r.json().get("items", [])
     if not items:
-        return {"handle": handle, "error": "channel not found (check the handle)"}
+        hint = channel.get("id") or channel.get("handle")
+        return {"label": label, "error": f"not found ({hint}) — fix id/handle in CHANNELS"}
     c = items[0]
     return {
-        "handle": handle,
+        "label": label,
         "channel_id": c["id"],
         "title": c["snippet"]["title"],
         "uploads_playlist": c["contentDetails"]["relatedPlaylists"]["uploads"],
@@ -163,10 +165,10 @@ def build_dataframe(api_key: str, like_weight: float):
     channel_meta = []
     errors = []
 
-    for handle in CHANNEL_HANDLES:
-        ch = resolve_channel(handle, api_key)
+    for channel in CHANNELS:
+        ch = resolve_channel(channel, api_key)
         if ch is None or ch.get("error"):
-            errors.append(f"{handle}: {ch.get('error') if ch else 'unknown error'}")
+            errors.append(f"{channel['label']}: {ch.get('error') if ch else 'unknown error'}")
             continue
         channel_meta.append(ch)
         live_counts[ch["title"]] = 0
