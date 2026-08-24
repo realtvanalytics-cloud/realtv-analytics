@@ -46,7 +46,7 @@ CHANNELS = [
     {"label": "Mahaa News",     "handle": "@mahaanews",        "id": "UCDKjhgRoPF1CQk7HluMz23A"},
     {"label": "ETV Andhra",     "handle": "@etvandhrapradesh", "id": None},
     {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
-    {"label": "RTV",            "handle": "@RTVNewsNetwork",     "id: None},
+    {"label": "RTV",            "handle": "@RTVNewsNetwork",    "id": None},
     {"label": "BIGTV",          "handle": "@BIGTVTeluguLive",   "id": None},
 ]
 
