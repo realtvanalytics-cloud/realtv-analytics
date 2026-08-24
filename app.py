@@ -38,7 +38,7 @@ CHANNELS = [
     {"label": "Real TV (you)",  "handle": "@realtvtelugunews", "id": None},
     {"label": "TV9 Telugu",     "handle": "@tv9telugu",        "id": "UCPXTXMecYqnRKNdqdVOGSFg"},
     {"label": "NTV Telugu",     "handle": "@ntvteluguofficial","id": "UCumtYpCY26F6Jr3satUgMvA"},
-    {"label": "TV5 News",       "handle": "@tv5news",   "id": None},
+    {"label": "TV5 News",       "handle": "@tv5news",           "id": None},
     {"label": "V6 News",        "handle": "@V6News",           "id": None},
     {"label": "Sakshi TV",      "handle": "@SakshiTV",         "id": None},
     {"label": "ABN Telugu",     "handle": "@abntelugutv",      "id": None},
@@ -46,6 +46,8 @@ CHANNELS = [
     {"label": "Mahaa News",     "handle": "@mahaanews",        "id": "UCDKjhgRoPF1CQk7HluMz23A"},
     {"label": "ETV Andhra",     "handle": "@etvandhrapradesh", "id": None},
     {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
+    {"label": "RTV",            "handle": "@RTVNewsNetwork",     "id: None},
+    {"label": "BIGTV",          "handle": "@BIGTVTeluguLive",   "id": None},
 ]
 
 # Breaking-news keywords (Telugu + English). A title hit flags the video;
