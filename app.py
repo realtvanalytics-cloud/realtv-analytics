@@ -83,15 +83,18 @@ CHANNELS = [
     {"label": "Real TV (you)",  "handle": "@realtvtelugunews", "id": None},
     {"label": "TV9 Telugu",     "handle": "@tv9telugu",        "id": "UCPXTXMecYqnRKNdqdVOGSFg"},
     {"label": "NTV Telugu",     "handle": "@ntvteluguofficial","id": "UCumtYpCY26F6Jr3satUgMvA"},
-    {"label": "TV5 News",       "handle": "@tv5newschannel",   "id": None},
-    {"label": "V6 News",        "handle": "@V6News",           "id": None},
+    {"label": "TV5 News",       "handle": "@tv5news",   "id": None},
+    {"label": "V6 News",        "handle": "@V6NewsTelugu",           "id": None},
     {"label": "Sakshi TV",      "handle": "@SakshiTV",         "id": None},
     {"label": "ABN Telugu",     "handle": "@abntelugutv",      "id": None},
     {"label": "10TV",           "handle": "@10TVNewsTelugu",   "id": None},
     {"label": "Mahaa News",     "handle": "@mahaanews",        "id": "UCDKjhgRoPF1CQk7HluMz23A"},
     {"label": "ETV Andhra",     "handle": "@etvandhrapradesh", "id": None},
     {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
+    {"label": "SumanTV",       "handle": "@SumanTVChannel",   "id": None},
+    {"label": "BigTV telugu live",       "handle": "@BIGTVTeluguLive",   "id": None},
 ]
+
 
 # Breaking-news keywords (Telugu + English). A title hit flags the video;
 # it does NOT hide anything — all videos still show.
