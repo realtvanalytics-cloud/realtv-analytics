@@ -83,16 +83,14 @@ CHANNELS = [
     {"label": "Real TV (you)",  "handle": "@realtvtelugunews", "id": None},
     {"label": "TV9 Telugu",     "handle": "@tv9telugu",        "id": "UCPXTXMecYqnRKNdqdVOGSFg"},
     {"label": "NTV Telugu",     "handle": "@ntvteluguofficial","id": "UCumtYpCY26F6Jr3satUgMvA"},
-    {"label": "TV5 News",       "handle": "@tv5news",           "id": None},
-    {"label": "V6 News",        "handle": "@V6NewsTelugu",           "id": None},
+    {"label": "TV5 News",       "handle": "@tv5newschannel",   "id": None},
+    {"label": "V6 News",        "handle": "@V6News",           "id": None},
     {"label": "Sakshi TV",      "handle": "@SakshiTV",         "id": None},
     {"label": "ABN Telugu",     "handle": "@abntelugutv",      "id": None},
     {"label": "10TV",           "handle": "@10TVNewsTelugu",   "id": None},
     {"label": "Mahaa News",     "handle": "@mahaanews",        "id": "UCDKjhgRoPF1CQk7HluMz23A"},
     {"label": "ETV Andhra",     "handle": "@etvandhrapradesh", "id": None},
     {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
-    {"label": "RTV",            "handle": "@RTVNewsNetwork",    "id": None},
-    {"label": "BIGTV",          "handle": "@BIGTVTeluguLive",   "id": None},
 ]
 
 # Breaking-news keywords (Telugu + English). A title hit flags the video;
@@ -274,6 +272,31 @@ def build_dataframe(api_key: str, like_weight: float):
 # ─────────────────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Real TV — Telugu News Tracker", layout="wide")
 
+
+# ── Password gate (shared team password from Secrets) ────────────────────────
+def check_password():
+    if st.session_state.get("_authed"):
+        return
+    try:
+        expected = st.secrets["APP_PASSWORD"]
+    except Exception:
+        st.error('No app password set. In Streamlit → Settings → Secrets add:  '
+                 'APP_PASSWORD = "choose-a-shared-password"')
+        st.stop()
+    st.title("🔒 Real TV — Team Access")
+    st.caption("Enter the team password to continue.")
+    pw = st.text_input("Password", type="password")
+    if st.button("Enter"):
+        if pw == expected:
+            st.session_state["_authed"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect password. Try again.")
+    st.stop()
+
+
+check_password()
+
 st.title("Real TV — Telugu News Competitor Tracker")
 st.caption(
     "Videos posted today by the top Telugu news channels. "
@@ -324,7 +347,9 @@ c2.metric("Breaking-flagged", int((df["Breaking"] == "🔴").sum()))
 c3.metric("Total live now / today", sum(live_counts.values()))
 c4.metric("Channels active today", df["Channel"].nunique())
 
-tab1, tab2, tab3 = st.tabs(["📋 Today's feed", "🚀 Performance board", "🔴 Live per channel"])
+tab1, tab_trend, tab2, tab3 = st.tabs(
+    ["📋 Today's feed", "🔥 Trending today", "🚀 Performance board", "🔴 Live per channel"]
+)
 
 display_cols = ["Breaking", "Channel", "Title", "Posted (IST)", "Views", "Likes", "Velocity", "Link"]
 
@@ -337,6 +362,29 @@ with tab1:
         use_container_width=True, hide_index=True,
         column_config={"Link": st.column_config.LinkColumn("Watch", display_text="▶ open")},
     )
+
+with tab_trend:
+    st.subheader("🔥 Trending today")
+    st.caption("Videos posted today (since midnight IST), ranked two ways. "
+               "Velocity = fastest-rising for its age; Views = simply most-watched.")
+    trend_cols = ["Rank", "Breaking", "Channel", "Title", "Posted (IST)",
+                  "Views", "Likes", "Velocity", "Link"]
+    link_cfg = {"Link": st.column_config.LinkColumn("Watch", display_text="▶ open")}
+
+    left, right = st.columns(2)
+    with left:
+        st.markdown("**By velocity — fastest-rising**")
+        by_v = view_df.sort_values("Velocity", ascending=False).reset_index(drop=True).copy()
+        by_v["Rank"] = by_v.index + 1
+        st.dataframe(by_v[trend_cols], use_container_width=True, hide_index=True,
+                     column_config=link_cfg)
+    with right:
+        st.markdown("**By views — most-watched today**")
+        by_w = view_df.sort_values("Views", ascending=False).reset_index(drop=True).copy()
+        by_w["Rank"] = by_w.index + 1
+        st.dataframe(by_w[trend_cols], use_container_width=True, hide_index=True,
+                     column_config=link_cfg)
+    st.caption("When the same video tops both columns, that's your strongest trend signal.")
 
 with tab2:
     st.subheader("Ranked by velocity — what's catching fire")
