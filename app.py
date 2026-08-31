@@ -93,6 +93,7 @@ CHANNELS = [
     {"label": "HMTV",           "handle": "@hmtvlive",         "id": "UCNZOrs1QBt8cJnv9ud96qRA"},
     {"label": "SumanTV",       "handle": "@SumanTVChannel",   "id": None},
     {"label": "BigTV telugu live",       "handle": "@BIGTVTeluguLive",   "id": None},
+    {"label": "Rtv",       "handle": "@rtvtelugu.com",   "id": None}
 ]
 
 
